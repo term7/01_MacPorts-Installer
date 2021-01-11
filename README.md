@@ -12,7 +12,7 @@ To suggest improvements, please report an issue or send a pull request.
 
 ## Why install MacPorts?
 
-The MacPorts Project is an open-source community initiative that enables you to install and compile software on your Mac, that otherwise runs natively on Linux. Another popular packet manager is Homebrew. However we use MacPorts to install Privacy Enhancements on our system. If you want to use other install scripts we wrote, you need to install MacPorts as well.
+The MacPorts Project is an open-source community initiative that enables you to install and compile software on your Mac, that otherwise runs natively on Linux. Another popular packet manager is Homebrew. However we prefer MacPorts. If you want to use other install scripts we wrote, you need to install MacPorts as well.
 
 <p align="center">
   <img src="/png/Macports_Installer.png" title="MacPorts Installer">
