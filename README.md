@@ -1,7 +1,7 @@
 # 01 - Install MacPorts
 
 
-This installation script is targeted to users who wish to make informed decisions and who want to improve their privacy and security on a Mac. We want everybody to be able to able to do this installation, which is why this script is meant to be educative and a source of learning - even for users who have never used the command line (Terminal.app) before.
+This installation script is targeted to users who wish to make informed decisions and who want to improve their privacy and security on a Mac. We want everybody to be able to able to do this installation, which is why this script is meant to be educative and a source of learning - especially for users who have never used the command line (Terminal.app) before.
 
 This script has been tested on MacOS Big Sur.
 The installation is running stable on our own Macs.
