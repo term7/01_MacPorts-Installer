@@ -1,0 +1,115 @@
+#!/bin/sh
+
+# Speedy_Install_MacPorts.sh
+#
+#   term7 / 02.12.2020
+
+#   MIT License
+#   Copyright (c) 2020
+
+#   Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+#   The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+#   Setup Prerequisites:
+
+sudo xcode-select --install
+sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+sudo xcodebuild -license
+sudo xcodebuild -runFirstLaunch
+
+#   Download and install MacPorts from source
+
+cd
+curl -O https://distfiles.macports.org/MacPorts/MacPorts-2.6.4.tar.bz2
+tar xf MacPorts-2.6.4.tar.bz2
+
+cd MacPorts-2.6.4/
+./configure
+make
+sudo make install
+
+sudo rm -r ~/MacPorts*
+
+#   Add Macports location to PATH
+
+ZSHRC=~/.zshrc
+[ -e "$ZSHRC" ] || touch "$ZSHRC"
+
+tee -a "$ZSHRC" << EOF > /dev/null
+export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
+EOF
+
+#   Define environment variables for updater daemon and create locations
+
+ENHANCEMENT_FOLDER=/Applications/System_Enhancements
+UPDATE_FOLDER=$ENHANCEMENT_FOLDER/macports_updater
+LOG_OUT=$UPDATE_FOLDER/macports.out.log
+LOG_ERR=$UPDATE_FOLDER/macports.err.log
+
+UPDATER=$UPDATE_FOLDER/macports_updater.sh
+
+DAEMON_FOLDER=/Library/LaunchDaemons
+UPDATER_NAME=macports.updater
+UPDATER_DAEMON=$DAEMON_FOLDER/$UPDATER_NAME.plist
+
+if [ ! -d "$ENHANCEMENT_FOLDER" ]; then
+  sudo mkdir $ENHANCEMENT_FOLDER
+fi
+
+sudo mkdir $UPDATE_FOLDER
+
+sudo touch "$LOG_OUT"
+sudo touch "$LOG_ERR"
+
+#   Create Updater Script and set Ownership
+
+sudo tee "$UPDATER" << EOF > /dev/null
+#!/bin/bash
+date +'%d/%m/%Y %H:%M:%S' > $LOG_OUT
+echo ' ' >> $LOG_OUT
+date +'%d/%m/%Y %H:%M:%S' > $LOG_ERR
+echo ' ' >> $LOG_ERR
+bash -c '/opt/local/bin/port selfupdate ; /opt/local/bin/port -puN upgrade outdated ; /opt/local/bin/port uninstall inactive ; /opt/local/bin/port uninstall leaves'
+EOF
+
+
+sudo chown root:wheel "$UPDATER"
+sudo chown $(whoami):admin "$LOG_OUT" "$LOG_ERR"
+sudo chmod 744 "$UPDATER"
+sudo chmod 644 "$LOG_OUT" "$LOG_ERR"
+
+#   Create Updater Launch Daemon
+
+[ -e "$UPDATER_DAEMON" ] || sudo touch "$UPDATER_DAEMON"
+
+sudo tee "$UPDATER_DAEMON" << EOF > /dev/null
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+<key>Label</key>
+<string>${UPDATER_NAME}</string>
+<key>LaunchOnlyOnce</key>
+<true/>
+<key>ProgramArguments</key>
+<array>
+    <string>${UPDATER}</string>
+</array>
+<key>StandardOutPath</key>
+<string>${LOG_OUT}</string>
+<key>StandardErrorPath</key>
+<string>${LOG_ERR}</string>
+<key>StartInterval</key>
+<integer>300</integer>
+</dict>
+</plist>
+EOF
+
+#  At last we set file ownership and permissions and load the Updater.
+
+sudo chown root:wheel "$UPDATER_DAEMON"
+sudo chmod 644 "$UPDATER_DAEMON"
+sudo launchctl load "$UPDATER_DAEMON"
