@@ -24,12 +24,12 @@ MacPorts requires Xcode to be installed on your Mac. Please download Xcode from 
 
 ## INSTALLATION
 
-01_Install_MacPorts.sh is a script that will download and compile MacPorts for you. It also will check if you have already set up and installed all required prerequisites. If you don't, the script will point you into the right direction. Simply execute the installation script in a terminal window, when prompted type your admin password and press ENTER. Then follow the installation instructions.
-If you are an advanced user, you probably already have MacPorts or Homebrew installed on your system. If you want to speed up the installation, please select the non-interactive script 01_Speedy_Install_MacPorts.sh instead.
+[01_Install_MacPorts.sh](https://github.com/term7/01_MacPorts-Installer/tree/main/script) is a script that will download and compile MacPorts for you. It also will check if you have already set up and installed all required prerequisites. If you don't, the script will point you into the right direction. Simply execute the installation script in a terminal window, when prompted type your admin password and press ENTER. Then follow the installation instructions.
+If you are an advanced user, you probably already have MacPorts or Homebrew installed on your system. If you want to speed up the installation, please select the non-interactive script [01_Speedy_Install_MacPorts.sh](https://github.com/term7/01_MacPorts-Installer/tree/main/script) instead.
 
 Both Scripts will setup a daemon that will check for updates whenever you restart for your computer. It will also unclutter your MacPorts installation if necessary.
 
-If you don't want to use MacPorts anymore, simply run 01_Uninstall_MacPorts.sh to purge MacPorts, the MacPorts updater daemon, and all other MacPorts installations from your system.
+If you don't want to use MacPorts anymore, simply run [01_Uninstall_MacPorts.sh](https://github.com/term7/01_MacPorts-Installer/tree/main/script) to purge MacPorts, the MacPorts updater daemon, and all other MacPorts installations from your system.
 
 If you want to go through the installation process on your own, please follow the original instructions by the MacPorts project:
 
